@@ -2,12 +2,40 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="stylesheet" href="./src/style.css" />
+    <script type="module" src="./src/main.js" defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Final Project</title>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
+    <header>
+      <h1>GreenIt</h1>
+      <nav>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About us</a></li>
+          <li><a href="#">Contact us</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      This is where the app functionality resides
+      <div>
+        <form id="Search-form">
+          <label>
+            What's your plant problem?
+            <input
+              name="Search-form"
+              placeholder="e.g.: my Orchids are not flowering this year"
+              required
+            />
+          </label>
+          <button type="submit">Give me the GreenIt Advice</button>
+        </form>
+      </div>
+    </main>
+
+    <footer>Made with love by Hadia, Marina & Vinay</footer>
   </body>
 </html>
