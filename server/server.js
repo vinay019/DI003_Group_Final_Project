@@ -1,33 +1,30 @@
 import express from "express";
 import cors from "cors";
-import pg from "pg"; // For future database use
-import "dotenv/config";
+import dotenv from "dotenv";
 import { GoogleGenAI } from "@google/genai";
 
-const app = express();
-app.use(
-  cors({
-    origin: true,
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
-  })
-);
-app.options("/analyse", cors());
-app.use(express.json());
-const PORT = process.env.PORT || 8080;
+dotenv.config();
 
-const genAI = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-});
+const app = express();
+app.use(cors());
+
+app.use(express.json({ limit: "20mb" }));
+app.use(express.urlencoded({ extended: true, limit: "20mb" }));
+
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+const PORT = 8080;
 
 const systemInstruction = `
 You are GreenIt, an intelligent plant care assistant.
 
 Your task:
-1. Identify the plant species from the uploaded image.
-2. Analyse the image for visible health problems (if any).
+1. Identify the plant species from the user's prompt and/or image.
+2. Analyse for visible or described plant health problems (if any).
 3. Provide structured, beginner-friendly plant care guidance.
 4. Always respond in valid JSON exactly following the schema below.
+5. Automatically detect the user's input language and reply fully in that language.
+6. If the language cannot be detected (e.g. when the user uploads only an image), default to British English.
 
 Required JSON schema:
 {
@@ -41,7 +38,8 @@ Required JSON schema:
   "recommended_actions": ["string", "string"],
   "prevention_tips": ["string", "string"],
   "careGuide": {
-    "language": "en",
+    "language": "string",
+    "language_name": "string",
     "Watering": "string",
     "Light": "string",
     "Soil": "string",
@@ -51,51 +49,66 @@ Required JSON schema:
 }
 
 Constraints:
-- Always return valid JSON only. Do not include explanations outside the JSON.
-- If uncertain, provide your best guess and flag uncertainty inside the relevant fields.
+- Always return valid JSON only.
+- Do not include explanations outside the JSON.
 - Make the care guide beginner-friendly and concise.
-- If a requested output language is provided (e.g., "pl" for Polish, "es" for Spanish), translate the entire careGuide values into that language.
-- If no language is provided, default to British English ("en").
+- Detect the user's input language automatically and write the entire careGuide in that language.
+- If the language cannot be detected, default to British English.
 `;
 
-app.get("/", (req, res) => {
-  res.send("Ouch! You've hit my roots!");
+app.get("/", function (_req, res) {
+  res.send("Ouch! You’ve hit my roots!");
 });
 
-// Analyse plant issues and provide advice
-app.post("/analyse", async (req, res) => {
+// Accepts text, image, or both
+app.post("/analyse", async function (req, res) {
+  const prompt = (req.body && req.body.prompt) || "";
+  const image = req.body && req.body.image;
+  const mimeType = (req.body && req.body.mimeType) || "image/jpeg";
+
+  if (!prompt && !image) {
+    return res
+      .status(400)
+      .json({ error: "Please provide a prompt or an image." });
+  }
+
   try {
-    const { prompt, language = "en" } = req.body || {};
-    if (!prompt || typeof prompt !== "string") {
-      return res
-        .status(400)
-        .json({ error: "Please provide a 'prompt' string." });
+    const parts = [];
+
+    if (prompt) {
+      parts.push({ text: prompt });
+    } else {
+      parts.push({
+        text: "Please analyse the plant image and return the required JSON strictly following the schema.",
+      });
     }
 
-    const response = await genAI.models.generateContent({
+    if (image) {
+      parts.push({
+        inlineData: {
+          mimeType: mimeType,
+          data: image,
+        },
+      });
+    }
+
+    const geminiResponse = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: `language: ${language}\n${prompt}`,
+      contents: [{ role: "user", parts }],
       config: {
-        responseMimeType: "application/json",
         systemInstruction,
+        responseMimeType: "application/json",
       },
     });
 
-    const text = response.text || "";
-    try {
-      res.json(JSON.parse(text));
-    } catch {
-      res.status(502).json({
-        error: "The model did not return valid JSON.",
-        raw: text,
-      });
-    }
+    const text = geminiResponse.text;
+    return res.json(JSON.parse(text));
   } catch (err) {
-    console.error("Analyse route error:", err?.message || err);
-    res.status(500).json({ error: "Analysis failed." });
+    console.error("Analyse error:", err);
+    return res.status(500).json({ error: "Analysis failed" });
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Running on ${PORT}`);
+app.listen(PORT, function () {
+  console.log(`Running on http://localhost:${PORT}`);
 });
