@@ -43,13 +43,15 @@ form.addEventListener("submit", async function (e) {
     if (langCode || langName) {
       languageDisplay.textContent =
         (langName || langCode) + (langCode ? " (" + langCode + ")" : "");
-      languageInfo.style.display = "block";
+      languageInfo.classList.remove("hidden");
     } else {
-      languageInfo.style.display = "none";
+      languageInfo.classList.add("hidden");
       languageDisplay.textContent = "";
     }
 
     displayAdvice(data);
+
+    fetchTopPlants();
   } catch (err) {
     console.error("Request failed:", err);
     alert("Something went wrong. Please try again.");
@@ -132,5 +134,37 @@ function displayAdvice(data) {
   document.getElementById("common-issues").textContent =
     care["Common issues"] || "Not available";
 
-  outputContainer.style.display = "block";
+  outputContainer.classList.remove("hidden");
 }
+
+async function fetchTopPlants() {
+  try {
+    const res = await fetch("http://localhost:8080/stats/top");
+    const rows = await res.json();
+
+    const ul = document.getElementById("top-plants");
+    ul.innerHTML = "";
+
+    if (!rows || rows.length === 0) {
+      const li = document.createElement("li");
+      li.textContent = "No searches yet.";
+      ul.appendChild(li);
+      return;
+    }
+
+    for (let i = 0; i < rows.length; i++) {
+      const item = rows[i];
+      const li = document.createElement("li");
+      li.textContent = `${item.plant_name} — ${item.count} ${
+        item.count === 1 ? "search" : "searches"
+      }`;
+      ul.appendChild(li);
+    }
+  } catch (err) {
+    console.error("Failed to fetch top plants:", err);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  fetchTopPlants();
+});

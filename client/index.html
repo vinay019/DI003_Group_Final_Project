@@ -11,7 +11,7 @@
     <header>
       <h1>GreenIt</h1>
       <nav>
-        <ul style="list-style-type: none">
+        <ul>
           <li><a href="#">Home</a></li>
           <li><a href="#">About us</a></li>
           <li><a href="#">Contact us</a></li>
@@ -22,33 +22,37 @@
     <main>
       <h2>Dear plant parent, what seems to be the issue?</h2>
       <h3>If you type AND add a photo, your answer will be spot on!</h3>
-
+      <p class="language-tip">
+        💡 Tip: You can type your problem in <strong>any language</strong>.
+        We'll reply in the same language!
+      </p>
       <div>
         <form id="Search-form">
-          <label>
+          <label for="prompt">
             What's your plant problem? (optional)
             <input
+              id="prompt"
               type="text"
               name="prompt"
               placeholder="e.g. my orchids aren't flowering this year"
             />
           </label>
 
-          <label>
+          <label for="plantImage">
             Upload an image (optional)
-            <input type="file" id="plantImage" accept="image/*" />
+            <input id="plantImage" type="file" accept="image/*" />
           </label>
 
           <button type="submit">Give me the GreenIt Advice</button>
         </form>
       </div>
 
-      <div id="language-info" style="margin-top: 20px; display: none">
+      <div id="language-info" class="hidden">
         <h3>Advice provided in:</h3>
         <p id="language-display"></p>
       </div>
 
-      <div id="output-container" style="margin-top: 20px; display: none">
+      <div id="output-container" class="hidden" aria-live="polite">
         <h3>GreenIt Advice</h3>
 
         <p><strong>Plant name:</strong> <span id="plant-name"></span></p>
@@ -70,18 +74,40 @@
         <ul id="prevention-tips"></ul>
 
         <h4>Care guide</h4>
-        <p><strong>Watering:</strong> <span id="watering"></span></p>
-        <p><strong>Light:</strong> <span id="light"></span></p>
-        <p><strong>Soil:</strong> <span id="soil"></span></p>
-        <p><strong>Pruning:</strong> <span id="pruning"></span></p>
-        <p><strong>Common issues:</strong> <span id="common-issues"></span></p>
+        <div class="care-guide">
+          <div class="care-card">
+            <h3>Watering</h3>
+            <p id="watering"></p>
+          </div>
+          <div class="care-card">
+            <h3>Light</h3>
+            <p id="light"></p>
+          </div>
+          <div class="care-card">
+            <h3>Soil</h3>
+            <p id="soil"></p>
+          </div>
+          <div class="care-card">
+            <h3>Pruning</h3>
+            <p id="pruning"></p>
+          </div>
+          <div class="care-card">
+            <h3>Common issues</h3>
+            <p id="common-issues"></p>
+          </div>
+        </div>
       </div>
     </main>
 
-    <div>
-      <h1>this is where DB will show stored info</h1>
-    </div>
+    <section>
+      <h2>🌿 Top 10 Most Searched Plants</h2>
+      <ul id="top-plants">
+        <li>Loading...</li>
+      </ul>
+    </section>
 
-    <footer>Made with love by DI003 Cohort: Hadia, Marina & Vinay</footer>
+    <footer class="footer">
+      Made with &#128154; by DI003 Cohort: Hadia, Marina & Vinay
+    </footer>
   </body>
 </html>
