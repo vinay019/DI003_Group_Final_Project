@@ -5,6 +5,11 @@ import { GoogleGenAI } from "@google/genai";
 
 dotenv.config();
 
+import pg from "pg";
+const db = new pg.Pool({
+  connectionString: process.env.DATABASE_CONNECTION_STRING,
+});
+
 const app = express();
 app.use(cors());
 
@@ -102,10 +107,44 @@ app.post("/analyse", async function (req, res) {
     });
 
     const text = geminiResponse.text;
-    return res.json(JSON.parse(text));
+    const data = JSON.parse(text);
+
+    let plantName = data.plant_common_name;
+    if (typeof plantName === "string") {
+      plantName = plantName.trim();
+      if (plantName) {
+        await db.query(
+          `INSERT INTO plant_searches (plant_name, count)
+       VALUES ($1, 1)
+       ON CONFLICT (plant_name)
+       DO UPDATE SET count = plant_searches.count + 1`,
+          [plantName]
+        );
+      } else {
+        console.log("Skipping count: empty plant_common_name.");
+      }
+    } else {
+      console.log("Skipping count: plant_common_name not provided by Gemini.");
+    }
+
+    return res.json(data);
   } catch (err) {
     console.error("Analyse error:", err);
     return res.status(500).json({ error: "Analysis failed" });
+  }
+});
+
+app.get("/stats/top", async (req, res) => {
+  try {
+    const r = await db.query(
+      `SELECT plant_name, count FROM plant_searches
+       ORDER BY count DESC, plant_name ASC
+       LIMIT 10`
+    );
+    res.json(r.rows);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Could not fetch stats" });
   }
 });
 
