@@ -25,15 +25,18 @@ form.addEventListener("submit", async function (e) {
   }
 
   try {
-    const response = await fetch("http://localhost:8080/analyse", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        prompt: prompt,
-        image: imageBase64,
-        mimeType: mimeType,
-      }),
-    });
+    const response = await fetch(
+      "https://di003-group-final-project-server.onrender.com/analyse",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: prompt,
+          image: imageBase64,
+          mimeType: mimeType,
+        }),
+      }
+    );
 
     const data = await response.json();
     console.log("Server response:", data);
@@ -139,7 +142,9 @@ function displayAdvice(data) {
 
 async function fetchTopPlants() {
   try {
-    const res = await fetch("http://localhost:8080/stats/top");
+    const res = await fetch(
+      "https://di003-group-final-project-server.onrender.com/stats/top"
+    );
     const rows = await res.json();
 
     const ul = document.getElementById("top-plants");
