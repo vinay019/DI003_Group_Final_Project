@@ -149,5 +149,7 @@ app.get("/stats/top", async (req, res) => {
 });
 
 app.listen(PORT, function () {
-  console.log(`Running on http://localhost:${PORT}`);
+  console.log(
+    `Running on https://di003-group-final-project-server.onrender.com:${PORT}`
+  );
 });
