@@ -1,4 +1,187 @@
+/* Import font */
+@import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600&display=swap");
+
+:root {
+  --sprout-green: #74c69d;
+  --moss-green: #387c6d;
+  --sunbeam-yellow: #ffd972;
+  --soil-brown: #5a4e3c;
+  --cloud-white: #fafaf5;
+  --pottery-clay: #d8a27f;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-  background-color: beige;
-  color: rgba(1, 39, 1, 0.367);
+  font-family: "Baloo 2", sans-serif;
+  background-color: var(--cloud-white);
+  color: var(--soil-brown);
+  line-height: 1.6;
+  padding: 1rem;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+ul li {
+  list-style: none;
+  display: inline;
+  margin: 0px 20px 0px 0px;
+}
+
+footer {
+  .footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+  }
+}
+/* Form */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: var(--sprout-green);
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+form input[type="text"],
+form input[type="file"] {
+  border: 2px solid var(--moss-green);
+  padding: 0.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+form input:focus {
+  outline: none;
+  border-color: var(--sunbeam-yellow);
+  background: #fffbea;
+}
+
+form button {
+  background: var(--moss-green);
+  color: var(--cloud-white);
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+form button:hover {
+  background: var(--sunbeam-yellow);
+  color: var(--soil-brown);
+  transition: background 0.3s ease;
+}
+
+#language-info {
+  margin: 1rem 0;
+  font-style: italic;
+  display: none;
+  color: var(--pottery-clay);
+}
+
+#output-container {
+  display: none;
+  margin-top: 1.5rem;
+}
+
+#plant-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--moss-green);
+}
+
+#scientific-name {
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--pottery-clay);
+  margin-bottom: 1rem;
+}
+
+ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+ul:empty::before {
+  content: "No data available.";
+  font-style: italic;
+  color: var(--soil-brown);
+}
+
+.care-guide {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.care-card {
+  background: var(--cloud-white);
+  border: 2px solid var(--sprout-green);
+  border-radius: 12px;
+  padding: 1rem;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(90, 78, 60, 0.1);
+}
+
+.care-card::before {
+  content: "🌱 ";
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  font-size: 1.2rem;
+}
+
+.care-card:first-child {
+  border-color: var(--sunbeam-yellow);
+}
+
+.care-card h3 {
+  margin-bottom: 0.5rem;
+  color: var(--moss-green);
+}
+
+.care-card p {
+  margin: 0;
+}
+
+@media (min-width: 600px) {
+  form {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  form input[type="text"] {
+    flex: 2;
+  }
+
+  form input[type="file"],
+  form button {
+    flex: 1;
+  }
+
+  .care-guide {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .care-guide {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
