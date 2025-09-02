@@ -20,22 +20,65 @@
     </header>
 
     <main>
-      This is where the app functionality resides
+      <h2>
+        Dear plant parent, enter your plant's problem below in the text box and
+        upload a photo or do either of these
+      </h2>
+
       <div>
         <form id="Search-form">
           <label>
-            What's your plant problem?
+            What's your plant problem? (optional)
             <input
-              name="Search-form"
-              placeholder="e.g.: my Orchids are not flowering this year"
-              required
+              name="prompt"
+              placeholder="e.g. my orchids aren't flowering this year"
             />
           </label>
+
+          <label>
+            Upload an image (optional)
+            <input type="file" id="plantImage" accept="image/*" />
+          </label>
+
           <button type="submit">Give me the GreenIt Advice</button>
         </form>
       </div>
+
+      <div id="language-info" style="margin-top: 20px; display: none">
+        <h3>Advice provided in:</h3>
+        <p id="language-display"></p>
+      </div>
+
+      <div id="output-container" style="margin-top: 20px; display: none">
+        <h3>GreenIt Advice</h3>
+
+        <p><strong>Plant name:</strong> <span id="plant-name"></span></p>
+        <p>
+          <strong>Scientific name:</strong> <span id="scientific-name"></span>
+        </p>
+        <p><strong>Problem:</strong> <span id="problem"></span></p>
+
+        <p><strong>Environmental problems:</strong></p>
+        <ul id="environmental-problems"></ul>
+
+        <p><strong>Health problems:</strong></p>
+        <ul id="health-problems"></ul>
+
+        <p><strong>Recommended actions:</strong></p>
+        <ul id="recommended-actions"></ul>
+
+        <p><strong>Prevention tips:</strong></p>
+        <ul id="prevention-tips"></ul>
+
+        <h4>Care guide</h4>
+        <p><strong>Watering:</strong> <span id="watering"></span></p>
+        <p><strong>Light:</strong> <span id="light"></span></p>
+        <p><strong>Soil:</strong> <span id="soil"></span></p>
+        <p><strong>Pruning:</strong> <span id="pruning"></span></p>
+        <p><strong>Common issues:</strong> <span id="common-issues"></span></p>
+      </div>
     </main>
 
-    <footer>Made with love by Hadia, Marina & Vinay</footer>
+    <footer>Made with love by DI003 Cohort: Hadia, Marina & Vinay</footer>
   </body>
 </html>
